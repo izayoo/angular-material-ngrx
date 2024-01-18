@@ -15,6 +15,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 import {userReducer} from "./states/users/users.reducer";
 import {UsersEffects} from "./states/users/users.effects";
+import {reducers} from "./states/app.states";
 
 @NgModule({
   declarations: [
@@ -29,9 +30,7 @@ import {UsersEffects} from "./states/users/users.effects";
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,
-    StoreModule.forRoot({
-      users: userReducer
-    }, {}),
+    StoreModule.forRoot(reducers),
     EffectsModule.forRoot([UsersEffects]),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
   ],

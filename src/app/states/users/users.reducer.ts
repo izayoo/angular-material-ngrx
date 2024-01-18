@@ -32,7 +32,7 @@ export const initialUserState: UserState = {
   status: 'pending'
 };
 
-export const reducer = createReducer(
+export const usersReducer = createReducer(
   initialUsersState,
   on(UsersActions.loadUsers, (state) => ({
     ...state,
@@ -63,7 +63,7 @@ export const reducer = createReducer(
   }))
 );
 
-export const reducerB = createReducer(
+export const userReducer = createReducer(
   initialUserState,
   on(UsersActions.loadUserSuccess, (state, { data }) => ({
     ...state,
@@ -107,8 +107,3 @@ export const reducerB = createReducer(
     status: 'error'
   }))
 );
-
-export const userReducer = combineReducers({
-  users: reducer,
-  user: reducerB
-});
