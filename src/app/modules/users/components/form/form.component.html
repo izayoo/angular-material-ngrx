@@ -1,0 +1,33 @@
+<!-- NameListComponent Template -->
+<div class="container mt-4">
+  <!-- ... existing code ... -->
+  <div class="w-50 m-auto">
+    <form [formGroup]="userFormGroup" class="w-100 px-4 py-5 border-1">
+      <h2>{{title}}</h2>
+      <div class="form-group">
+        <mat-form-field appearance="fill">
+          <mat-label>ID</mat-label>
+          <input matInput type="number" formControlName="id" required>
+          <mat-error *ngIf="userFormGroup.get('id')?.hasError('required')">ID is required</mat-error>
+          <mat-error *ngIf="userFormGroup.get('id')?.hasError('pattern')">ID must be numeric</mat-error>
+          <mat-error *ngIf="userFormGroup.get('id')?.hasError('max')">ID must be 8 digits or shorter</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="form-group">
+        <mat-form-field appearance="fill">
+          <mat-label>First Name</mat-label>
+          <input matInput formControlName="first_name" required>
+          <mat-error *ngIf="userFormGroup.get('first_name')?.hasError('required')">First Name is required</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="form-group">
+        <mat-form-field appearance="fill">
+          <mat-label>Last Name</mat-label>
+          <input matInput formControlName="last_name" required>
+          <mat-error *ngIf="userFormGroup.get('last_name')?.hasError('required')">Last Name is required</mat-error>
+        </mat-form-field>
+      </div>
+      <button type="button" class="btn btn-dark mt-2" (click)="submit()">Submit</button>
+    </form>
+  </div>
+</div>

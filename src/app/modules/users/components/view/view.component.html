@@ -1,0 +1,40 @@
+<div class="container mt-4">
+  <h1 class="float-start">Users</h1>
+  <a class="btn btn-secondary mb-1 float-end px-3" (click)="create()"><mat-icon>add</mat-icon>Create</a>
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 w-100">
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef> ID No. </th>
+      <td mat-cell *matCellDef="let element"> {{ element.id }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="first_name">
+      <th mat-header-cell *matHeaderCellDef> First Name </th>
+      <td mat-cell *matCellDef="let element"> {{ element.first_name }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="last_name">
+      <th mat-header-cell *matHeaderCellDef> Last Name </th>
+      <td mat-cell *matCellDef="let element"> {{ element.last_name }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="action">
+      <th mat-header-cell *matHeaderCellDef> Action </th>
+      <td mat-cell *matCellDef="let element">
+        <a class="button" (click)="edit(element.id)">
+          <mat-icon>assignment</mat-icon>
+        </a>
+        <a class="button" (click)="delete(element.id)">
+          <mat-icon>delete_outline</mat-icon>
+        </a>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                 showFirstLastButtons>
+  </mat-paginator>
+
+</div>

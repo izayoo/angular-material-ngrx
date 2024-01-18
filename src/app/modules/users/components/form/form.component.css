@@ -1,0 +1,23 @@
+/deep/ .mat-form-field {
+  width: 100%;
+}
+/deep/ .mat-form-field .mat-input-element {
+  color: #000;
+}
+/deep/ .mat-form-field .mat-form-field-label {
+  color: #000;
+}
+/deep/ .mat-form-field .mat-form-field-underline {
+  background-color: #000;
+}
+/deep/ .mat-form-field .mat-form-field-ripple {
+  background-color: #000;
+}
+/deep/ .mat-form-field .mat-form-field-required-marker {
+  color: #000;
+}
+
+form {
+  border: 2px solid black;
+  border-radius: 1em;
+}
