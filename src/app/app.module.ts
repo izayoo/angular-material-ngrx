@@ -8,8 +8,13 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import {MatIconModule} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
-import {MatSidenavModule} from "@angular/material/sidenav";
 import {AppRoutingModule} from "./app-routing.module";
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { environment } from '../environments/environment';
+import {userReducer} from "./states/users/users.reducer";
+import {UsersEffects} from "./states/users/users.effects";
 
 @NgModule({
   declarations: [
@@ -24,6 +29,11 @@ import {AppRoutingModule} from "./app-routing.module";
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,
+    StoreModule.forRoot({
+      users: userReducer
+    }, {}),
+    EffectsModule.forRoot([UsersEffects]),
+    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
   ],
   providers: [],
   bootstrap: [AppComponent]

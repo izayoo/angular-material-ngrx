@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { User } from "../../models/user";
+import {Observable, of} from "rxjs";
 
 const DATA_STORE_KEY = "mtc_users";
 
@@ -14,23 +15,27 @@ export class UserService {
     }
   }
 
-  getAll() {
+  getData() {
     let data = localStorage.getItem(DATA_STORE_KEY);
     return data ? JSON.parse(data) : [];
   }
 
-  getOneById(id: number) {
-    let data = this.getAll();
+  getAll(): Observable<User[]> {
+    return of(this.getData());
+  }
+
+  getOneById(id: number): Observable<User>{
+    let data = this.getData();
     let record = data.find((item: User) => item.id == id);
     if (record != undefined) {
-      return record;
+      return of(record);
     } else {
       throw new Error("User not Found");
     }
   }
 
   create(user: User) {
-    let data = this.getAll();
+    let data = this.getData();
     let index = data.findIndex((item: User) => item.id == user.id);
     if (index >= 0) {
       throw new Error("User exists.");
@@ -41,7 +46,7 @@ export class UserService {
   }
 
   update(id: number, user: User) {
-    let data = this.getAll();
+    let data = this.getData();
     let index = data.findIndex((item: User) => item.id == id && item.id == user.id);
     if (index >= 0) {
       data[index] = user;
@@ -52,7 +57,7 @@ export class UserService {
   }
 
   delete(id: number) {
-    let data = this.getAll();
+    let data = this.getData();
     let index = data.findIndex((item: User) => item.id == id);
     if (index > 0) {
       data.splice(index, 1);

@@ -4,6 +4,9 @@ import {UserService} from "../../../../services/user/user.service";
 import {Router} from "@angular/router";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
+import {select, Store} from "@ngrx/store";
+import {usersList} from "../../../../states/users/users.selectors";
+import {UsersActions} from "../../../../states/users/users.actions";
 
 @Component({
   selector: 'app-view',
@@ -15,18 +18,25 @@ export class ViewComponent implements OnInit, AfterViewInit {
   private userService: UserService;
   private router: Router;
 
-  constructor(userService: UserService, router: Router) {
+  constructor(userService: UserService, router: Router, private store: Store) {
+    this.store = store;
     this.router = router;
     this.userService = userService;
   }
 
+
+  // users$ = this.store.select(usersList);
   displayedColumns: string[] = ['id', 'first_name', 'last_name', 'action'];
   dataSource = new MatTableDataSource<User>([]);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   ngOnInit(): void {
-    this.dataSource.data = this.userService.getAll().reverse();
+    this.store.pipe(select(usersList)).subscribe((users) => {
+      this.dataSource.data = users;
+    });
+    this.store.dispatch(UsersActions.loadUsers());
+    // this.dataSource.data = this.userService.getAll().reverse();
   }
 
   ngAfterViewInit() {

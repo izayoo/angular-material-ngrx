@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {UserService} from "../../../../services/user/user.service";
+import {UsersActions} from "../../../../states/users/users.actions";
+import {Store} from "@ngrx/store";
+
 
 @Component({
   selector: 'app-form',
@@ -11,7 +14,8 @@ import {UserService} from "../../../../services/user/user.service";
 export class FormComponent implements OnInit {
 
   constructor(fb: FormBuilder, activatedRoute: ActivatedRoute, userService: UserService,
-              router: Router) {
+              router: Router, store: Store) {
+    this.store = store;
     this.router = router;
     this.userService = userService;
     this.activatedRoute = activatedRoute;
@@ -23,6 +27,7 @@ export class FormComponent implements OnInit {
   fb: FormBuilder;
   activatedRoute: ActivatedRoute;
   private router: Router;
+  private store: Store;
   userService: UserService;
 
   ngOnInit(): void {
@@ -42,17 +47,17 @@ export class FormComponent implements OnInit {
   }
 
   submit() {
-    try {
-      if (this.userFormGroup.valid) {
-        if (this.activatedRoute.snapshot.params['id']) {
-          this.userService.update(this.activatedRoute.snapshot.params['id'], this.userFormGroup.getRawValue());
-        } else {
-          this.userService.create(this.userFormGroup.getRawValue());
-        }
+    if (this.userFormGroup.valid) {
+      if (this.activatedRoute.snapshot.params['id'] &&
+        this.activatedRoute.snapshot.params['id'] == this.userFormGroup.get('id')?.value) {
+        this.store.dispatch(UsersActions.updateUser(this.userFormGroup.getRawValue()));
+        this.userFormGroup.setValue({})
+        // this.userService.update(this.activatedRoute.snapshot.params['id'], this.userFormGroup.getRawValue());
+      } else {
+        // this.userService.create(this.userFormGroup.getRawValue());
+        this.store.dispatch(UsersActions.createUser(this.userFormGroup.getRawValue()));
       }
-      this.router.navigate(['users']);
-    } catch (e: any) {
-      console.log(e.message);
     }
+    this.router.navigate(['users']);
   }
 }

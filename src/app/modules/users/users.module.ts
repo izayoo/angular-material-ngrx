@@ -9,6 +9,7 @@ import {MatInputModule} from "@angular/material/input";
 import {ReactiveFormsModule} from "@angular/forms";
 import {MatIconModule} from "@angular/material/icon";
 import {MatPaginatorModule} from "@angular/material/paginator";
+import { StoreModule } from '@ngrx/store';
 
 const routes: Routes = [
   { path: '', component: ViewComponent, pathMatch: 'full' },
