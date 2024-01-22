@@ -58,7 +58,6 @@ export class FormComponent implements OnInit, OnDestroy {
           id: this.activatedRoute.snapshot.params['id'],
           data: this.userFormGroup.getRawValue()
         }));
-        // this.userFormGroup.setValue({})
       } else {
         this.store.dispatch(UsersActions.createUser({data: this.userFormGroup.getRawValue()} ));
       }
