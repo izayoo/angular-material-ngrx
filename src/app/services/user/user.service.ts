@@ -24,7 +24,7 @@ export class UserService {
     return of(this.getData());
   }
 
-  getOneById(id: number): Observable<User>{
+  getOneById(id: number): Observable<User> {
     let data = this.getData();
     let record = data.find((item: User) => item.id == id);
     if (record != undefined) {
@@ -35,6 +35,7 @@ export class UserService {
   }
 
   create(user: User) {
+    console.log(user)
     let data = this.getData();
     let index = data.findIndex((item: User) => item.id == user.id);
     if (index >= 0) {
@@ -42,6 +43,7 @@ export class UserService {
     } else {
       data.push(user)
       localStorage.setItem(DATA_STORE_KEY, JSON.stringify(data));
+      return of(data);
     }
   }
 
@@ -51,6 +53,7 @@ export class UserService {
     if (index >= 0) {
       data[index] = user;
       localStorage.setItem(DATA_STORE_KEY, JSON.stringify(data));
+      return of(data);
     } else {
       throw new Error("User does not exist.");
     }

@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
-import {UserService} from "../../../../services/user/user.service";
 import {UsersActions} from "../../../../states/users/users.actions";
-import {Store} from "@ngrx/store";
+import {select, Store} from "@ngrx/store";
+import {Subject, takeUntil} from "rxjs";
+import {selectUser} from "../../../../states/users/users.selectors";
+import {AppState} from "../../../../states/app.states";
 
 
 @Component({
@@ -11,28 +13,22 @@ import {Store} from "@ngrx/store";
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.css']
 })
-export class FormComponent implements OnInit {
+export class FormComponent implements OnInit, OnDestroy {
 
-  constructor(fb: FormBuilder, activatedRoute: ActivatedRoute, userService: UserService,
-              router: Router, store: Store) {
-    this.store = store;
-    this.router = router;
-    this.userService = userService;
-    this.activatedRoute = activatedRoute;
-    this.fb = fb;
-  }
+  constructor(
+    private fb: FormBuilder,
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
+    private store: Store<AppState>
+  ) {}
 
   userFormGroup!: FormGroup;
   title = "Add User";
-  fb: FormBuilder;
-  activatedRoute: ActivatedRoute;
-  private router: Router;
-  private store: Store;
-  userService: UserService;
+  private destroy$ = new Subject<void>();
 
   ngOnInit(): void {
     this.userFormGroup = this.fb.group({
-      id: [{ value:'', disabled:this.activatedRoute.snapshot.params['id'] },
+      id: [{ value:'', disabled:this.activatedRoute.snapshot.params['id'], shouldLabelFloat:this.activatedRoute.snapshot.params['id'] },
         [Validators.required,
         Validators.pattern("^[0-9]*$"),
         Validators.max(99999999)], []],
@@ -42,20 +38,29 @@ export class FormComponent implements OnInit {
 
     if (this.activatedRoute.snapshot.params['id']) {
       this.title = "Edit User";
-      this.userFormGroup.setValue(this.userService.getOneById(this.activatedRoute.snapshot.params['id']));
+      this.store.pipe(select(selectUser), takeUntil(this.destroy$)).subscribe((user) => {
+        this.userFormGroup.setValue(user);
+      });
+      this.store.dispatch(UsersActions.loadUser({id:this.activatedRoute.snapshot.params['id']}));
     }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   submit() {
     if (this.userFormGroup.valid) {
       if (this.activatedRoute.snapshot.params['id'] &&
         this.activatedRoute.snapshot.params['id'] == this.userFormGroup.get('id')?.value) {
-        this.store.dispatch(UsersActions.updateUser(this.userFormGroup.getRawValue()));
-        this.userFormGroup.setValue({})
-        // this.userService.update(this.activatedRoute.snapshot.params['id'], this.userFormGroup.getRawValue());
+        this.store.dispatch(UsersActions.updateUser({
+          id: this.activatedRoute.snapshot.params['id'],
+          data: this.userFormGroup.getRawValue()
+        }));
+        // this.userFormGroup.setValue({})
       } else {
-        // this.userService.create(this.userFormGroup.getRawValue());
-        this.store.dispatch(UsersActions.createUser(this.userFormGroup.getRawValue()));
+        this.store.dispatch(UsersActions.createUser({data: this.userFormGroup.getRawValue()} ));
       }
     }
     this.router.navigate(['users']);

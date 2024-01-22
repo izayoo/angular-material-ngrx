@@ -7,8 +7,6 @@ import {UsersActions} from "./users.actions";
 import {Observable, of} from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 
-
-
 @Injectable()
 export class UsersEffects {
 
@@ -35,10 +33,10 @@ export class UsersEffects {
   loadUser$: any = createEffect((): any =>
     this.actions$.pipe(
       ofType(UsersActions.loadUser),
-      switchMap(() =>
-        this.userService.getAll().pipe(
-          map((data: any) => UsersActions.loadUsersSuccess({ data })),
-          catchError((error) => of(UsersActions.loadUsersFailure({ error })))
+      switchMap((action) =>
+        this.userService.getOneById(action.id).pipe(
+          map((data: any) => UsersActions.loadUserSuccess({ data })),
+          catchError((error) => of(UsersActions.loadUserFailure({ error })))
         )
       )
     )
@@ -46,11 +44,11 @@ export class UsersEffects {
 
   createUser$: any = createEffect((): any =>
     this.actions$.pipe(
-      ofType(UsersActions.createUserSuccess, UsersActions.createUserFailure),
-      switchMap(() =>
-        this.userService.getAll().pipe(
-          map((data: any) => UsersActions.loadUsersSuccess({ data })),
-          catchError((error) => of(UsersActions.loadUsersFailure({ error })))
+      ofType(UsersActions.createUser),
+      switchMap((action) =>
+        this.userService.create(action.data).pipe(
+          map((data: any) => UsersActions.createUserSuccess({ data })),
+          catchError((error) => of(UsersActions.createUserFailure({ error })))
         )
       )
     )
@@ -58,9 +56,9 @@ export class UsersEffects {
 
   updateUser$: any = createEffect((): any =>
     this.actions$.pipe(
-      ofType(UsersActions.updateUserSuccess, UsersActions.updateUserFailure),
-      switchMap(() =>
-        this.userService.getAll().pipe(
+      ofType(UsersActions.updateUser),
+      switchMap((action) =>
+        this.userService.update(action.id, action.data).pipe(
           map((data: any) => UsersActions.loadUsersSuccess({ data })),
           catchError((error) => of(UsersActions.loadUsersFailure({ error })))
         )

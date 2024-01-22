@@ -1,4 +1,4 @@
-import {combineReducers, createReducer, on} from '@ngrx/store';
+import {createReducer, on} from '@ngrx/store';
 import { UsersActions } from "./users.actions";
 import {User} from "../../models/user";
 
@@ -6,11 +6,6 @@ export const usersFeatureKey = 'users';
 
 export interface UsersState {
   users: User[],
-  error: string | null,
-  status: 'pending' | 'loading' | 'error' | 'success';
-}
-
-export interface UserState {
   user: User,
   error: string | null,
   status: 'pending' | 'loading' | 'error' | 'success';
@@ -18,15 +13,10 @@ export interface UserState {
 
 export const initialUsersState: UsersState = {
   users: [],
-  error: null,
-  status: 'pending'
-};
-
-export const initialUserState: UserState = {
   user: {
     id: 0,
     first_name: '',
-    last_name: ''
+    last_name: '',
   },
   error: null,
   status: 'pending'
@@ -51,20 +41,24 @@ export const usersReducer = createReducer(
   })),
   on(UsersActions.createUser, (state, { data }) => ({
     ...state,
-    users: [...state.users, data]
+    users: [...state.users, data],
+    user: data,
+    status: 'pending'
   })),
   on(UsersActions.updateUser, (state, { id, data }) => ({
     ...state,
-    users: [...state.users, data]
+    users: [...state.users, data],
+    status: 'pending'
   })),
   on(UsersActions.deleteUser, (state, { id }) => ({
     ...state,
-    users: state.users.filter((user) => user.id != id)
-  }))
-);
-
-export const userReducer = createReducer(
-  initialUserState,
+    users: state.users.filter((user) => user.id != id),
+    status: 'pending'
+  })),
+  on(UsersActions.loadUser, (state) => ({
+    ...state,
+    status: 'loading'
+  })),
   on(UsersActions.loadUserSuccess, (state, { data }) => ({
     ...state,
     user: data,
