@@ -65,6 +65,7 @@ export class UserService {
     if (index > 0) {
       data.splice(index, 1);
       localStorage.setItem(DATA_STORE_KEY, JSON.stringify(data));
+      return of(data);
     } else {
       throw new Error("User not found.");
     }

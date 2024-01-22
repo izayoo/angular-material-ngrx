@@ -56,7 +56,7 @@ export class ViewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   delete(id: number) {
     if (confirm('Do you really want to delete this user? Warning: This is irreversible.')) {
-      this.userService.delete(id);
+      this.store.dispatch(UsersActions.deleteUser({id: id}));
     }
   }
 }

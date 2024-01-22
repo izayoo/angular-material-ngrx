@@ -68,11 +68,11 @@ export class UsersEffects {
 
   deleteUser$: any = createEffect((): any =>
     this.actions$.pipe(
-      ofType(UsersActions.deleteUserSuccess, UsersActions.deleteUserFailure),
-      switchMap(() =>
-        this.userService.getAll().pipe(
-          map((data: any) => UsersActions.loadUsersSuccess({ data })),
-          catchError((error) => of(UsersActions.loadUsersFailure({ error })))
+      ofType(UsersActions.deleteUser),
+      switchMap((action) =>
+        this.userService.delete(action.id).pipe(
+          map((data: any) => UsersActions.deleteUserSuccess({ data })),
+          catchError((error) => of(UsersActions.deleteUserFailure({ error })))
         )
       )
     )

@@ -28,7 +28,7 @@ export class FormComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.userFormGroup = this.fb.group({
-      id: [{ value:'', disabled:this.activatedRoute.snapshot.params['id'], shouldLabelFloat:this.activatedRoute.snapshot.params['id'] },
+      id: [{ value:'', disabled:this.activatedRoute.snapshot.params['id'] },
         [Validators.required,
         Validators.pattern("^[0-9]*$"),
         Validators.max(99999999)], []],
@@ -61,7 +61,9 @@ export class FormComponent implements OnInit, OnDestroy {
       } else {
         this.store.dispatch(UsersActions.createUser({data: this.userFormGroup.getRawValue()} ));
       }
+      this.router.navigate(['users']);
     }
-    this.router.navigate(['users']);
+
+    this.userFormGroup.markAllAsTouched();
   }
 }
